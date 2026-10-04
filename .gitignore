@@ -1,0 +1,17 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Template checker
+__pycache__/
+*.py[cod]
+.venv/
+
+# Add stack-specific build and dependency exclusions during initialization.

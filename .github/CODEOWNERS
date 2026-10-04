@@ -1,0 +1,5 @@
+# 初始化时取消注释并替换为实际有访问权限的用户或团队。
+# * @YOUR_ORG/YOUR_TEAM
+# /specs/ @YOUR_ORG/PRODUCT_REVIEWERS
+# /architecture/ @YOUR_ORG/ENGINEERING_REVIEWERS
+# 此文件当前没有生效规则。还需在 GitHub 启用 Code Owner 必需审批。
