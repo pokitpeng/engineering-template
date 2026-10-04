@@ -4,11 +4,53 @@
 
 ## 从这里开始
 
+GitHub 可按以下步骤创建；GitLab 请使用下方的克隆方式。
+
 1. 在 GitHub 仓库 Settings 中启用 **Template repository**。
 2. 使用 **Use this template** 创建独立产品仓库。
 3. 按 [初始化清单](docs/initialization.md) 填写产品目标、选择技术栈并配置权限。
 4. 从 `templates/feature-spec.md` 复制出 `specs/<feature>.md`，审阅后实现第一个功能。
 5. 每个行为变更在同一 PR 内同步规格、实现和验证证据。
+
+### 在 GitLab 中使用
+
+先在 GitLab 创建**空项目**，不要初始化 README、许可证或 `.gitignore`。然后执行：
+
+```sh
+# 1. 克隆模板；my-system 替换为你的项目名称
+git clone https://github.com/pokitpeng/engineering-template.git my-system
+cd my-system
+
+# 2. 将 origin 改为实际 GitLab 项目地址
+git remote set-url origin git@gitlab.com:YOUR_GROUP/my-system.git
+
+# 3. 确认远程地址
+git remote -v
+
+# 4. 推送到 GitLab
+git push -u origin main
+```
+
+如果使用 HTTPS，第 2 步改为：
+
+```sh
+git remote set-url origin https://gitlab.com/YOUR_GROUP/my-system.git
+```
+
+将 `YOUR_GROUP` 替换为实际命名空间（可包含子组）；自建 GitLab 还需替换域名。SSH 方式需配置 SSH 公钥，HTTPS 方式按实例要求使用访问令牌或凭证管理器，不要把令牌写入远程 URL。
+
+这种方式**保留模板的提交历史**，不会自动同步模板更新。推送后继续按 [初始化清单](docs/initialization.md) 完成项目配置。
+
+**注意：推送成功不代表 GitLab 工程约束已配置。** 当前模板的平台配置面向 GitHub，在 GitLab 中还需要适配：
+
+| 当前配置 | GitLab 对应配置 |
+| --- | --- |
+| `.github/workflows/checks.yml` | 根目录 `.gitlab-ci.yml`，并配置可用 Runner |
+| `.github/pull_request_template.md` | `.gitlab/merge_request_templates/Default.md` |
+| `.github/CODEOWNERS` | `.gitlab/CODEOWNERS` |
+| GitHub 分支保护与审批 | GitLab 受保护分支、合并检查与审批设置 |
+
+`scripts/check_project.py` 目前要求 `.github/` 文件存在，且固定检查 `.github/CODEOWNERS`。迁移这些文件时，必须同步调整检查器及其测试；不能只移动目录。平台约束应在 GitLab 中单独配置，部分审批能力取决于版本和订阅等级。
 
 ## 目录与权威来源
 
