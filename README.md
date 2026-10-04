@@ -62,6 +62,9 @@ git remote set-url origin https://gitlab.com/YOUR_GROUP/my-system.git
 | `specs/` | 业务规则、状态、交互、验收与规则 ID |
 | `architecture/overview.md` | 模块边界、技术选型、质量约束 |
 | `architecture/decisions/` | 重要决策的背景、取舍和后果 |
+| `specs/observability.md` | 默认继承的日志、指标、trace 规则 |
+| `architecture/observability.md` | 项目采集管线、信号目录、预算与监控设计 |
+| `operations/runbooks/` | 经验证的告警排查与恢复手册 |
 | `contracts/api/`、`contracts/schemas/` | 接口与共享数据契约；不维护重复定义 |
 | `tests/acceptance/` | 跨模块或跨系统的业务验收测试 |
 | `templates/` | 可重复使用的空白模板，不是实际规格 |
@@ -77,6 +80,22 @@ git remote set-url origin https://gitlab.com/YOUR_GROUP/my-system.git
 需求与规则 → 审阅 → 实现与测试 → 提交验证证据 → 审批与合并 → 发布反馈。
 
 详细约定见 [开发流程](docs/workflow.md)。高风险变更（权限、资金、删除、迁移等）先批准规格和风险方案；小变更可在同一 PR 内完成。
+
+## 内置工程基线：可观测性
+
+人可以提供目标，由 AI 起草规格、拆解任务和编码；但产物不能只交付功能代码。AI 的默认交付范围还包含可观测性、验证证据和排障方法，关键业务取舍及风险接受仍由负责人决定。
+
+所有新项目继承 [OBS-001～OBS-010](specs/observability.md)：
+
+- **Logs**：结构化事件、统一身份、错误分类及 trace/span 关联。
+- **Metrics**：吞吐、结果、延迟分布与饱和度，明确单位、分母和标签预算。
+- **Traces**：关键跨边界调用及异步上下文，默认优先兼容 OpenTelemetry / W3C Trace Context。
+- **可操作性**：查询、SLO、告警、runbook 和真实导出链路验收。
+- **安全与成本**：脱敏、采样、保留期限、基数限制和采集故障隔离。不是默认全量记录所有输入、响应和变量。
+
+落地顺序：填写 [项目可观测性设计](architecture/observability.md) → 选择技术栈并实现 → 运行 [验收清单](tests/acceptance/observability.md) 对应测试 → 提交真实证据。每份功能规格和变更计划都包含可观测性增量要求。
+
+**本模板提供规范、设计模板、流程约束和文档检查；没有预装 SDK、Collector、监控后端或运行时验收测试。** 新项目必须根据技术栈实现这些能力，并将真实检查接入 CI/发布流程。可观测性帮助定位运行时问题，但不能替代测试、代码审查与安全验证。
 
 ## 运行模板检查
 
@@ -95,7 +114,7 @@ python3 scripts/check_project.py --initialized
 
 CI 默认执行前两项。完成初始化后应将 CI 检查命令加上 `--initialized`，并接入真实的类型检查、构建和测试。
 
-**这些检查只验证模板结构、指定目录内的本地 Markdown 文件链接，以及初始化占位符；不能证明业务正确、安全或完成验收。** 链接检查不验证网络链接、锚点、引用式链接或 HTML。模板检查的测试也不是产品测试。
+**这些检查只验证模板结构、指定目录内的本地 Markdown 文件链接，以及初始化占位符；不能证明业务正确、安全或运行时可观测性完成验收。** 严格模式会检查 `product/`、`architecture/`、`specs/`、`operations/` 和 `tests/acceptance/` 的占位符；空白 `templates/` 不受影响。 链接检查不验证网络链接、锚点、引用式链接或 HTML。模板检查的测试也不是产品测试。
 
 ## 模板版本与升级
 
@@ -106,8 +125,8 @@ CI 默认执行前两项。完成初始化后应将 CI 检查命令加上 `--ini
 
 ## 已有约束与待配置约束
 
-- 已提供：本地结构检查、检查器自测、GitHub Actions、PR 模板。
-- 需项目配置：实际测试、有效 CODEOWNERS、分支保护、必需检查、审批与环境权限。
+- 已提供：本地结构检查、检查器自测、GitHub Actions、PR 模板、可观测性基线与验收设计。
+- 需项目实现/配置：埋点与采集管线、仪表盘/告警、真实测试、有效 CODEOWNERS、分支保护、必需检查、审批与环境权限。
 - `AGENTS.md`、PR 勾选框和 CODEOWNERS 文件本身都不能强制阻止合并。
 
 初始化后请将本 README 的项目说明替换为实际系统说明，并保留适用的流程与命令入口。

@@ -17,6 +17,14 @@
 - [ ] 选择是否需要契约生成；确定权威来源，避免多份手工维护。
 - [ ] 替换 README 为项目使用说明，保留模板来源与版本记录。
 
+## 可观测性（所有新项目默认继承）
+
+- [ ] 阅读 [OBS 基线](../specs/observability.md)，在 [项目设计](../architecture/observability.md) 填写采集管线、SDK、资源身份与上下文策略。
+- [ ] 实现统一日志、指标和 trace 初始化/关闭；按实际运行形态覆盖关键边界，不适用项有理由及批准。
+- [ ] 填写事件/指标目录、标签白名单、采样、队列/导出超时、开销预算、数据保留和访问策略。
+- [ ] 创建实际仪表盘、告警与 `operations/runbooks/` 手册，明确负责人及无数据/采集故障检测。
+- [ ] 按 [可观测性验收清单](../tests/acceptance/observability.md) 实现并运行测试，填写命令、CI job 与真实证据；模板 CI 不代替运行时验收。
+
 ## GitHub 与安全（需要平台配置）
 
 - [ ] 用实际有仓库访问权限的用户或团队替换 `.github/CODEOWNERS` 中的注释示例，确认 GitHub 能识别。
@@ -35,4 +43,4 @@ python3 scripts/check_project.py --initialized
 python3 -m unittest discover -s scripts/tests -v
 ```
 
-严格模式仅检查产品/架构文档占位符和 CODEOWNERS 是否存在活动规则，不校验文字质量、用户权限或平台保护配置。上面的检查清单仍需负责人实际确认。
+严格模式额外检查 `product/`、`architecture/`、`specs/`、`operations/` 和 `tests/acceptance/` 文档占位符以及 CODEOWNERS 是否存在活动规则，不校验文字质量、运行时可观测性、用户权限或平台保护配置。上面的检查清单仍需负责人实际确认。

@@ -20,6 +20,10 @@
 
 {{SECURITY_PERFORMANCE_AND_RELIABILITY}}
 
+## 可观测性
+
+所有运行单元继承 [可观测性基线](../specs/observability.md)。本项目的日志、指标、trace 管线、预算、告警及裁剪方案统一维护在 [可观测性设计](observability.md)。不能用补充文档代替实际埋点和运行时验收。
+
 ## 项目命令
 
 填写可直接执行的真实命令；项目 CI 应调用同一入口。不适用的操作明确说明原因，不能以占位空命令假装检查通过。

@@ -86,7 +86,35 @@ class ProjectCheckTests(unittest.TestCase):
 
     def test_template_placeholders_remain_allowed(self):
         self.put("templates/feature-spec.md", "{{FEATURE_NAME}}\n")
+        self.put("templates/runbook.md", "{{RUNBOOK_OWNER}}\n")
         self.assertEqual(check(self.root, initialized=True), [])
+
+    def test_observability_assets_are_required(self):
+        for name in ("specs/observability.md", "architecture/observability.md",
+                     "tests/acceptance/observability.md", "templates/runbook.md",
+                     "operations/runbooks/README.md"):
+            with self.subTest(name=name):
+                (self.root / name).unlink()
+                self.assertIn(f"missing required file: {name}", check(self.root))
+                self.put(name, "fixture\n")
+
+    def test_initialized_rejects_observability_placeholders(self):
+        for name in ("architecture/observability.md", "tests/acceptance/observability.md",
+                     "operations/runbooks/test-alert.md"):
+            with self.subTest(name=name):
+                self.put(name, "{{OBS_OWNER}}\n")
+                self.assertEqual(check(self.root), [])
+                self.assertIn(f"{name}:1: unresolved project placeholder",
+                              check(self.root, initialized=True))
+                self.put(name, "configured\n")
+
+    def test_observability_document_links_are_checked(self):
+        for name in ("operations/runbooks/test-alert.md", "tests/acceptance/test-flow.md"):
+            with self.subTest(name=name):
+                self.put(name, "[missing](missing.md)\n")
+                self.assertTrue(any(f"{name}:1: missing local link target" in e
+                                    for e in check(self.root)))
+                self.put(name, "fixture\n")
 
     def test_commented_owners_do_not_count(self):
         self.put(".github/CODEOWNERS", "# * @someone\n")

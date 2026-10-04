@@ -15,11 +15,16 @@ REQUIRED_FILES = (
     "product/capabilities.md",
     "product/glossary.md",
     "specs/README.md",
+    "specs/observability.md",
     "architecture/overview.md",
+    "architecture/observability.md",
     "architecture/decisions/README.md",
     "contracts/api/README.md",
     "contracts/schemas/README.md",
     "tests/acceptance/README.md",
+    "tests/acceptance/observability.md",
+    "operations/runbooks/README.md",
+    "templates/runbook.md",
     "templates/feature-spec.md",
     "templates/change-plan.md",
     "templates/adr.md",
@@ -31,7 +36,11 @@ REQUIRED_FILES = (
     "scripts/check_project.py",
     "scripts/tests/test_check_project.py",
 )
-DOC_DIRS = ("product", "specs", "architecture", "contracts", "templates", "docs")
+DOC_DIRS = (
+    "product", "specs", "architecture", "contracts", "templates", "docs",
+    "operations", "tests/acceptance",
+)
+INITIALIZED_DOC_DIRS = ("product", "architecture", "specs", "operations", "tests/acceptance")
 PLACEHOLDER = re.compile(r"\{\{[A-Z][A-Z0-9_]*\}\}")
 INLINE_LINK = re.compile(r"!?\[[^\]\n]*\]\(\s*(<[^>\n]+>|[^\s()]+)(?:\s+\"[^\"\n]*\")?\s*\)")
 
@@ -104,7 +113,8 @@ def check(root, initialized=False):
         text = path.read_text(encoding="utf-8")
         errors.extend(local_link_errors(root, path, text))
         relative = path.relative_to(root)
-        if initialized and relative.parts[0] in {"product", "architecture", "specs"}:
+        if initialized and any(relative.is_relative_to(directory)
+                               for directory in INITIALIZED_DOC_DIRS):
             for number, line in enumerate(text.splitlines(), 1):
                 if PLACEHOLDER.search(line):
                     errors.append(f"{relative}:{number}: unresolved project placeholder")
