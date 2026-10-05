@@ -11,23 +11,25 @@ REQUIRED_FILES = (
     "README.md",
     "AGENTS.md",
     "TEMPLATE_VERSION",
-    "product/goals.md",
-    "product/capabilities.md",
-    "product/glossary.md",
-    "specs/README.md",
-    "specs/observability.md",
-    "architecture/overview.md",
-    "architecture/observability.md",
-    "architecture/decisions/README.md",
+    "docs/README.md",
+    "docs/product/goals.md",
+    "docs/product/capabilities.md",
+    "docs/product/glossary.md",
+    "docs/specs/README.md",
+    "docs/specs/observability.md",
+    "docs/architecture/overview.md",
+    "docs/architecture/observability.md",
+    "docs/architecture/decisions/README.md",
     "contracts/api/README.md",
     "contracts/schemas/README.md",
     "tests/acceptance/README.md",
-    "tests/acceptance/observability.md",
-    "operations/runbooks/README.md",
-    "templates/runbook.md",
-    "templates/feature-spec.md",
-    "templates/change-plan.md",
-    "templates/adr.md",
+    "docs/acceptance/README.md",
+    "docs/acceptance/observability.md",
+    "docs/operations/runbooks/README.md",
+    "docs/templates/runbook.md",
+    "docs/templates/feature-spec.md",
+    "docs/templates/change-plan.md",
+    "docs/templates/adr.md",
     "docs/initialization.md",
     "docs/workflow.md",
     ".github/CODEOWNERS",
@@ -36,11 +38,11 @@ REQUIRED_FILES = (
     "scripts/check_project.py",
     "scripts/tests/test_check_project.py",
 )
-DOC_DIRS = (
-    "product", "specs", "architecture", "contracts", "templates", "docs",
-    "operations", "tests/acceptance",
+DOC_DIRS = ("docs", "contracts", "tests/acceptance")
+INITIALIZED_DOC_DIRS = (
+    "docs/product", "docs/architecture", "docs/specs", "docs/operations",
+    "docs/acceptance", "tests/acceptance",
 )
-INITIALIZED_DOC_DIRS = ("product", "architecture", "specs", "operations", "tests/acceptance")
 PLACEHOLDER = re.compile(r"\{\{[A-Z][A-Z0-9_]*\}\}")
 INLINE_LINK = re.compile(r"!?\[[^\]\n]*\]\(\s*(<[^>\n]+>|[^\s()]+)(?:\s+\"[^\"\n]*\")?\s*\)")
 

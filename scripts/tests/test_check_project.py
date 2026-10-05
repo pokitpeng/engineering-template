@@ -29,15 +29,15 @@ class ProjectCheckTests(unittest.TestCase):
         self.assertEqual(check(self.root, initialized=True), [])
 
     def test_missing_file(self):
-        (self.root / "product/goals.md").unlink()
-        self.assertIn("missing required file: product/goals.md", check(self.root))
+        (self.root / "docs/product/goals.md").unlink()
+        self.assertIn("missing required file: docs/product/goals.md", check(self.root))
 
     def test_empty_file(self):
-        self.put("product/goals.md", " \n")
-        self.assertIn("empty required file: product/goals.md", check(self.root))
+        self.put("docs/product/goals.md", " \n")
+        self.assertIn("empty required file: docs/product/goals.md", check(self.root))
 
     def test_relative_link_and_fragment(self):
-        self.put("specs/sample.md", "[goals](../product/goals.md#users)\n")
+        self.put("docs/specs/sample.md", "[goals](../product/goals.md#users)\n")
         self.assertEqual(check(self.root), [])
 
     def test_encoded_path_and_title(self):
@@ -46,11 +46,11 @@ class ProjectCheckTests(unittest.TestCase):
         self.assertEqual(check(self.root), [])
 
     def test_missing_link(self):
-        self.put("README.md", "[missing](specs/missing.md)\n")
+        self.put("README.md", "[missing](docs/specs/missing.md)\n")
         self.assertTrue(any("missing local link target" in e for e in check(self.root)))
 
     def test_root_relative_link(self):
-        self.put("docs/sample.md", "[goals](/product/goals.md)\n")
+        self.put("docs/sample.md", "[goals](/docs/product/goals.md)\n")
         self.assertEqual(check(self.root), [])
 
     def test_escape_link(self):
@@ -79,28 +79,28 @@ class ProjectCheckTests(unittest.TestCase):
         self.assertIn("README.md:4", errors[0])
 
     def test_initialized_rejects_project_placeholders(self):
-        self.put("product/goals.md", "{{PROJECT_NAME}}\n")
+        self.put("docs/product/goals.md", "{{PROJECT_NAME}}\n")
         self.assertEqual(check(self.root), [])
         self.assertTrue(any("unresolved project placeholder" in e
                             for e in check(self.root, initialized=True)))
 
     def test_template_placeholders_remain_allowed(self):
-        self.put("templates/feature-spec.md", "{{FEATURE_NAME}}\n")
-        self.put("templates/runbook.md", "{{RUNBOOK_OWNER}}\n")
+        self.put("docs/templates/feature-spec.md", "{{FEATURE_NAME}}\n")
+        self.put("docs/templates/runbook.md", "{{RUNBOOK_OWNER}}\n")
         self.assertEqual(check(self.root, initialized=True), [])
 
     def test_observability_assets_are_required(self):
-        for name in ("specs/observability.md", "architecture/observability.md",
-                     "tests/acceptance/observability.md", "templates/runbook.md",
-                     "operations/runbooks/README.md"):
+        for name in ("docs/specs/observability.md", "docs/architecture/observability.md",
+                     "docs/acceptance/observability.md", "docs/templates/runbook.md",
+                     "docs/operations/runbooks/README.md"):
             with self.subTest(name=name):
                 (self.root / name).unlink()
                 self.assertIn(f"missing required file: {name}", check(self.root))
                 self.put(name, "fixture\n")
 
     def test_initialized_rejects_observability_placeholders(self):
-        for name in ("architecture/observability.md", "tests/acceptance/observability.md",
-                     "operations/runbooks/test-alert.md"):
+        for name in ("docs/architecture/observability.md", "docs/acceptance/observability.md",
+                     "docs/operations/runbooks/test-alert.md"):
             with self.subTest(name=name):
                 self.put(name, "{{OBS_OWNER}}\n")
                 self.assertEqual(check(self.root), [])
@@ -109,12 +109,38 @@ class ProjectCheckTests(unittest.TestCase):
                 self.put(name, "configured\n")
 
     def test_observability_document_links_are_checked(self):
-        for name in ("operations/runbooks/test-alert.md", "tests/acceptance/test-flow.md"):
+        for name in ("docs/operations/runbooks/test-alert.md",
+                     "docs/acceptance/test-flow.md", "tests/acceptance/test-flow.md"):
             with self.subTest(name=name):
                 self.put(name, "[missing](missing.md)\n")
                 self.assertTrue(any(f"{name}:1: missing local link target" in e
                                     for e in check(self.root)))
                 self.put(name, "fixture\n")
+
+    def test_documentation_indexes_are_required(self):
+        for name in ("docs/README.md", "docs/acceptance/README.md"):
+            with self.subTest(name=name):
+                (self.root / name).unlink()
+                self.assertIn(f"missing required file: {name}", check(self.root))
+                self.put(name, "fixture\n")
+
+    def test_old_layout_does_not_satisfy_required_files(self):
+        (self.root / "docs/product/goals.md").unlink()
+        self.put("product/goals.md", "legacy document\n")
+        self.assertIn("missing required file: docs/product/goals.md", check(self.root))
+
+    def test_links_between_docs_contracts_and_tests(self):
+        self.put("docs/acceptance/example.md",
+                 "[tests](../../tests/acceptance/README.md)\n"
+                 "[contract](../../contracts/api/README.md)\n")
+        self.put("tests/acceptance/README.md",
+                 "[plan](../../docs/acceptance/example.md)\n")
+        self.assertEqual(check(self.root), [])
+
+    def test_initialized_checks_test_directory_readmes(self):
+        self.put("tests/acceptance/README.md", "{{TEST_COMMAND}}\n")
+        self.assertIn("tests/acceptance/README.md:1: unresolved project placeholder",
+                      check(self.root, initialized=True))
 
     def test_commented_owners_do_not_count(self):
         self.put(".github/CODEOWNERS", "# * @someone\n")
@@ -123,7 +149,7 @@ class ProjectCheckTests(unittest.TestCase):
                             for e in check(self.root, initialized=True)))
 
     def test_cli_failure_exit_status(self):
-        (self.root / "product/goals.md").unlink()
+        (self.root / "docs/product/goals.md").unlink()
         script = Path(__file__).resolve().parents[1] / "check_project.py"
         result = subprocess.run([sys.executable, str(script), "--root", str(self.root)],
                                 capture_output=True, text=True, check=False)

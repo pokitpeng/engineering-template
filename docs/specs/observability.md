@@ -2,7 +2,7 @@
 
 本文件是所有新项目默认继承的工程要求，不表示模板已包含埋点 SDK、采集服务或经过验证的运行时实现。项目选择技术栈后，由 AI 实现并提交验收证据；不适用项必须写明理由、替代验证方式和负责人批准记录。
 
-项目具体配置以 [可观测性设计](../architecture/observability.md) 为准，验证场景见 [验收清单](../tests/acceptance/observability.md)。基础设施细节不应在每份功能规格中重复。
+项目具体配置以 [可观测性设计](../architecture/observability.md) 为准，验证场景见 [验收清单](../acceptance/observability.md)。基础设施细节不应在每份功能规格中重复。
 
 ## 目标与边界
 

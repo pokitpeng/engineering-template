@@ -2,7 +2,7 @@
 
 ## 开始工作
 
-1. 阅读 `README.md`、`product/goals.md`、`architecture/overview.md`、`specs/observability.md`、`architecture/observability.md` 及本次涉及的规格与契约。
+1. 阅读 `README.md`、`docs/README.md`、`docs/product/goals.md`、`docs/architecture/overview.md`、`docs/specs/observability.md`、`docs/architecture/observability.md` 及本次涉及的规格与契约。
 2. 检查工作区已有改动；不得覆盖无关或他人未提交的修改。
 3. 明确本次范围、受影响规则 ID、保持不变的行为及验证方式。
 4. 缺少业务取舍、发现规格冲突或关键未决问题时，提出问题，不替负责人作决定。
@@ -37,7 +37,7 @@ python3 scripts/check_project.py
 python3 -m unittest discover -s scripts/tests -v
 ```
 
-项目初始化后，真实安装、启动、构建和测试命令应记录在 `architecture/overview.md`，按变更影响运行。不将通用模板检查称为业务验收通过。
+项目初始化后，真实安装、启动、构建和测试命令应记录在 `docs/architecture/overview.md`，按变更影响运行。不将通用模板检查称为业务验收通过。
 
 交付时列出：修改目的与文件、规则 ID、实际执行命令与结果、未执行的检查与原因、剩余风险。涉及运行时行为时，补充日志/指标/trace 的真实脱敏证据、告警/runbook 位置和观测盲区。未运行就是未运行，不推测测试通过；不能把“已写埋点代码”当作“已验证可查询”。
 

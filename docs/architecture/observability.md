@@ -48,8 +48,8 @@
 
 {{OBS_SLOS_DASHBOARDS_ALERTS_AND_RUNBOOKS}}
 
-填写真实指标查询、目标窗口/阈值/分母、无数据策略、仪表盘/告警配置位置及负责人，链接 `operations/runbooks/` 中的排障文档。配置尽可能版本化，不将访问令牌写入 URL。
+填写真实指标查询、目标窗口/阈值/分母、无数据策略、仪表盘/告警配置位置及负责人，链接 `docs/operations/runbooks/` 中的排障文档。配置尽可能版本化，不将访问令牌写入 URL。
 
 ## 验证入口
 
-实际验收命令、场景状态与证据统一维护在 [可观测性验收清单](../tests/acceptance/observability.md)，避免复制后产生漂移。项目初始化时也要落实产品 CI 的必需检查。
+实际验收命令、场景状态与证据统一维护在 [可观测性验收清单](../acceptance/observability.md)，避免复制后产生漂移。项目初始化时也要落实产品 CI 的必需检查。

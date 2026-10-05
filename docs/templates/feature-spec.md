@@ -43,7 +43,7 @@
 
 ## 可观测性
 
-继承 `specs/observability.md` 中的 OBS-001～OBS-010；共享管线以 `architecture/observability.md` 为准。这里仅描述本功能的增量，不复制通用配置。
+继承 `docs/specs/observability.md` 中的 OBS-001～OBS-010；共享管线以 `docs/architecture/observability.md` 为准。这里仅描述本功能的增量，不复制通用配置。
 
 - 日志：{{OBS_EVENTS_LEVELS_SAFE_FIELDS_AND_CORRELATION}}
 - 指标：{{OBS_METRICS_UNITS_LABELS_COUNTING_AND_BUDGETS}}

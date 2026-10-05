@@ -41,4 +41,4 @@
 
 {{DEPLOYMENT_MIGRATIONS_AND_RECOVERY}}
 
-重要取舍记录在 `architecture/decisions/`，使用 `templates/adr.md`。
+重要取舍记录在 `docs/architecture/decisions/`，使用 `docs/templates/adr.md`。
